@@ -30,7 +30,7 @@ import xyz.kyngs.librelogin.bungeecord.integration.BungeeNanoLimboIntegration;
 import xyz.kyngs.librelogin.common.AuthenticLibreLogin;
 import xyz.kyngs.librelogin.common.config.ConfigurationKeys;
 import xyz.kyngs.librelogin.common.image.AuthenticImageProjector;
-import xyz.kyngs.librelogin.common.image.protocolize.ProtocolizeImageProjector;
+import xyz.kyngs.librelogin.common.image.packetevents.PacketEventsImageProjector;
 import xyz.kyngs.librelogin.common.util.CancellableTask;
 
 import java.io.File;
@@ -154,18 +154,8 @@ public class BungeeCordLibreLogin extends AuthenticLibreLogin<ProxiedPlayer, Ser
 
     @Override
     protected AuthenticImageProjector<ProxiedPlayer, ServerInfo> provideImageProjector() {
-        if (pluginPresent("Protocolize")) {
-            var projector = new ProtocolizeImageProjector<>(this);
-            if (!projector.compatible()) {
-                getLogger().warn("Detected protocolize, however with incompatible version (2.2.2), please upgrade or downgrade.");
-                return null;
-            }
-            getLogger().info("Detected Protocolize, enabling 2FA...");
-            return new ProtocolizeImageProjector<>(this);
-        } else {
-            getLogger().warn("Protocolize not found, some features (e.g. 2FA) will not work!");
-            return null;
-        }
+        getLogger().info("Enabling PacketEvents-based 2FA image projection...");
+        return new PacketEventsImageProjector<>(this);
     }
 
 

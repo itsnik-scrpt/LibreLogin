@@ -31,7 +31,7 @@ import xyz.kyngs.librelogin.common.AuthenticLibreLogin;
 import xyz.kyngs.librelogin.common.SLF4JLogger;
 import xyz.kyngs.librelogin.common.config.ConfigurationKeys;
 import xyz.kyngs.librelogin.common.image.AuthenticImageProjector;
-import xyz.kyngs.librelogin.common.image.protocolize.ProtocolizeImageProjector;
+import xyz.kyngs.librelogin.common.image.packetevents.PacketEventsImageProjector;
 import xyz.kyngs.librelogin.common.util.CancellableTask;
 import xyz.kyngs.librelogin.velocity.integration.VelocityNanoLimboIntegration;
 
@@ -149,35 +149,8 @@ public class VelocityLibreLogin extends AuthenticLibreLogin<Player, RegisteredSe
 
     @Override
     protected AuthenticImageProjector<Player, RegisteredServer> provideImageProjector() {
-        if (pluginPresent("protocolize")) {
-            var projector = new ProtocolizeImageProjector<>(this);
-            var maxProtocol = ProtocolVersion.MAXIMUM_VERSION.getProtocol();
-
-            if (maxProtocol == 760) {
-                // I hate this so much
-                try {
-                    var split = server.getVersion().getVersion().split("-");
-                    var build = Integer.parseInt(split[split.length - 1].replace("b", ""));
-
-                    if (build < 172) {
-                        logger.warn("Detected protocolize, but in order for the integration to work properly, you must be running Velocity build 172 or newer!");
-                        return null;
-                    }
-                } catch (Exception e) {
-                    // I guess it's probably fine
-                }
-            }
-
-            if (!projector.compatible()) {
-                getLogger().warn("Detected protocolize, however, with incompatible version (2.2.2), please upgrade or downgrade.");
-                return null;
-            }
-            getLogger().info("Detected Protocolize, enabling 2FA...");
-            return projector;
-        } else {
-            logger.warn("Protocolize not found, some features (e.g. 2FA) will not work!");
-            return null;
-        }
+        getLogger().info("Enabling PacketEvents-based 2FA image projection...");
+        return new PacketEventsImageProjector<>(this);
     }
 
     @Override

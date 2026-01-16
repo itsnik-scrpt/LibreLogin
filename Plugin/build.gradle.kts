@@ -141,6 +141,7 @@ dependencies {
     annotationProcessor("com.velocitypowered:velocity-api:3.4.0-SNAPSHOT")
     compileOnly("com.velocitypowered:velocity-api:3.4.0-SNAPSHOT")
     compileOnly("com.velocitypowered:velocity-proxy:3.2.0-SNAPSHOT-277")
+    libby("com.github.retrooper:packetevents-velocity:2.7.0")
 
     //MySQL
     libby("org.mariadb.jdbc:mariadb-java-client:3.5.1")
@@ -162,7 +163,6 @@ dependencies {
     libby("org.spongepowered:configurate-hocon:4.1.2")
     libby("at.favre.lib:bcrypt:0.10.2")
     libby("dev.samstevens.totp:totp:1.7.1")
-    compileOnly("dev.simplix:protocolize-api:2.4.2")
     libby("org.bouncycastle:bcprov-jdk18on:1.80")
     libby("org.apache.commons:commons-email:1.6.0")
     // DO NOT UPGRADE TO 4.15.0 OR ABOVE BEFORE TESTING WATERFALL AND BUNGEECORD COMPATIBILITY!!!
@@ -178,6 +178,7 @@ dependencies {
     compileOnly("net.md-5:bungeecord-api:1.21-R0.1-SNAPSHOT")
     compileOnly("com.github.ProxioDev.ValioBungee:RedisBungee-Bungee:0.12.5")
     libby("net.kyori:adventure-platform-bungeecord:4.1.2")
+    libby("com.github.retrooper:packetevents-bungeecord:2.7.0")
 
     //BStats
     libby("org.bstats:bstats-velocity:3.0.2")
