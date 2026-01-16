@@ -75,8 +75,8 @@ public class PaperPlatformHandle implements PlatformHandle<Player, World> {
         if (limbo) {
             world.setSpawnLocation(new Location(world, 0.5, world.getHighestBlockYAt(0, 0) + 1, 0.5));
             world.setKeepSpawnInMemory(true);
-            world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-            world.setGameRule(GameRule.DO_INSOMNIA, false);
+            world.setGameRule(GameRule.ADVANCE_TIME, false);
+            world.setGameRule(GameRule.SPAWN_PHANTOMS, false);
         }
 
         return world;
