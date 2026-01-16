@@ -6,6 +6,8 @@
 
 package xyz.kyngs.librelogin.bungeecord;
 
+import com.github.retrooper.packetevents.PacketEvents;
+import io.github.retrooper.packetevents.factory.bungee.BungeePacketEventsBuilder;
 import net.byteflux.libby.BungeeLibraryManager;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -18,6 +20,13 @@ public class BungeeCordBootstrap extends Plugin implements LibreLoginProvider<Pr
 
     @Override
     public void onLoad() {
+        // Initialize PacketEvents
+        PacketEvents.setAPI(BungeePacketEventsBuilder.build(this));
+        PacketEvents.getAPI().getSettings()
+                .checkForUpdates(false)
+                .debug(false);
+        PacketEvents.getAPI().load();
+
         var libraryManager = new BungeeLibraryManager(this);
 
         getLogger().info("Loading libraries...");
@@ -29,12 +38,14 @@ public class BungeeCordBootstrap extends Plugin implements LibreLoginProvider<Pr
 
     @Override
     public void onEnable() {
+        PacketEvents.getAPI().init();
         libreLogin.enable();
     }
 
     @Override
     public void onDisable() {
         libreLogin.disable();
+        PacketEvents.getAPI().terminate();
     }
 
     @Override

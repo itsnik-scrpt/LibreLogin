@@ -6,6 +6,7 @@
 
 package xyz.kyngs.librelogin.velocity;
 
+import com.github.retrooper.packetevents.PacketEvents;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.velocitypowered.api.event.Subscribe;
@@ -18,6 +19,7 @@ import com.velocitypowered.api.plugin.PluginDescription;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
+import io.github.retrooper.packetevents.factory.velocity.VelocityPacketEventsBuilder;
 import net.byteflux.libby.VelocityLibraryManager;
 import org.slf4j.Logger;
 import xyz.kyngs.librelogin.api.LibreLoginPlugin;
@@ -36,7 +38,6 @@ import java.util.concurrent.Executors;
         dependencies = {
                 @Dependency(id = "floodgate", optional = true),
                 @Dependency(id = "luckperms", optional = true),
-                @Dependency(id = "protocolize", optional = true),
                 @Dependency(id = "redisbungee", optional = true),
                 @Dependency(id = "nanolimbovelocity", optional = true)
         }
@@ -49,6 +50,13 @@ public class VelocityBootstrap implements LibreLoginProvider<Player, RegisteredS
     @Inject
     public VelocityBootstrap(ProxyServer server, Injector injector, Logger logger, PluginContainer container) {
         this.server = server;
+
+        // Initialize PacketEvents
+        PacketEvents.setAPI(VelocityPacketEventsBuilder.build(this, server, logger, Path.of("plugins", "librelogin")));
+        PacketEvents.getAPI().getSettings()
+                .checkForUpdates(false)
+                .debug(false);
+        PacketEvents.getAPI().load();
 
         // This is a very ugly hack to be able to load libraries in the constructor
         // We cannot pass this as a parameter to the constructor because the plugin is technically still not loaded
@@ -81,6 +89,7 @@ public class VelocityBootstrap implements LibreLoginProvider<Player, RegisteredS
 
     @Subscribe
     public void onInitialization(ProxyInitializeEvent event) {
+        PacketEvents.getAPI().init();
         libreLogin.enable();
 
         server.getEventManager().register(this, new Blockers(libreLogin.getAuthorizationProvider(), libreLogin.getConfiguration(), libreLogin.getMessages()));
@@ -95,5 +104,6 @@ public class VelocityBootstrap implements LibreLoginProvider<Player, RegisteredS
     @Subscribe
     public void onShutdown(ProxyShutdownEvent event) {
         libreLogin.disable();
+        PacketEvents.getAPI().terminate();
     }
 }
